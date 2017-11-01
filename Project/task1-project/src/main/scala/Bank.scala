@@ -1,12 +1,16 @@
+import java.util.concurrent.atomic.AtomicInteger
+
 object Bank {
 
-  private var idCounter: Int = 0
+  private val idCounter: AtomicInteger = new AtomicInteger(0)
 
-  def transaction(from: Account, to: Account, amount: Double): Unit = ??? // Implement
+  def transaction(from: Account, to: Account, amount: Double): Unit = {
+    from.withdraw(amount)
+    to.deposit(amount)
+  }
 
   def getUniqueId: Int = {
-    idCounter += 1 // Can this be improved?
-    idCounter
+    idCounter.addAndGet(1)
   }
 
 }
