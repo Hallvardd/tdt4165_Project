@@ -2,7 +2,7 @@ import exceptions.{IllegalAmountException, NoSufficientFundsException}
 
 class Account(initialBalance: Double, val uid: Int = Bank getUniqueId) {
 
-  var balance: Double = initialBalance
+  private var balance: Double = initialBalance
 
   def withdraw(amount: Double): Unit = {
     if(amount > balance){
@@ -24,4 +24,5 @@ class Account(initialBalance: Double, val uid: Int = Bank getUniqueId) {
   def getBalanceAmount: Double = {
     balance
   }
+
 }
