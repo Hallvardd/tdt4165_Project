@@ -28,14 +28,11 @@ class Bank(val allowedAttempts: Integer = 3) {
 
      */
     val t = Main.thread {
-      while (true) {
-        if(!transactionsQueue.isEmpty) {
-          val transaction: Transaction = transactionsQueue.pop
-          executorContext.execute(transaction)
-        }
-
+      while (!transactionsQueue.isEmpty) {
+        val transaction: Transaction = transactionsQueue.pop
+        executorContext.execute(transaction)
       }
-
+      processTransactions()
     }
 
   }

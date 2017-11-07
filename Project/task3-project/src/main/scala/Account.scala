@@ -14,7 +14,17 @@ class Account(val accountId: String, val bankId: String, val initialBalance: Dou
 
   private var transactions = HashMap[String, Transaction]()
 
-  class Balance(var amount: Double) {}
+  class Balance(var amount: Double) {
+
+    def getBalance: Double = {
+      amount
+    }
+
+    def setBalance(tran_amount: Double): Unit = {
+      amount += tran_amount
+    }
+
+  }
 
   val balance = new Balance(initialBalance)
 
@@ -24,21 +34,49 @@ class Account(val accountId: String, val bankId: String, val initialBalance: Dou
 
   def getTransactions: List[Transaction] = {
     // Should return a list of all Transaction-objects stored in transactions
-    ???
+    transactions.values.toList
   }
 
   def allTransactionsCompleted: Boolean = {
     // Should return whether all Transaction-objects in transactions are completed
-    ???
+    for(t <- getTransactions if !t.isCompleted){
+      return false
+    }
+    true
   }
 
-  def withdraw(amount: Double): Unit = ??? // Like in part 2
-  def deposit(amount: Double): Unit = ??? // Like in part 2
-  def getBalanceAmount: Double = ??? // Like in part 2
+  def setBalance(amount: Double): Unit = this.synchronized {
+    //This method is synchronized, hindering the variable balance from being altered by the two methods accessing the same variable.
+    if(balance.getBalance + amount < 0){
+      throw new NoSufficientFundsException(s"Amount: $amount, greater than balance: $balance")
+    }
+    balance.setBalance(amount)
+
+  }
+
+  def withdraw(amount: Double): Unit = {
+
+    if(amount < 0){
+      throw new IllegalAmountException(s"Amount: $amount, less than 0")
+    }
+    setBalance(-amount)
+  }
+
+  def deposit(amount: Double): Unit ={
+    if(amount < 0){
+      throw new IllegalAmountException(s"Amount: $amount, less than 0")
+    }
+    setBalance(amount)
+  }
+
+  def getBalanceAmount: Double = {
+    balance.getBalance
+  }
+
 
   def sendTransactionToBank(t: Transaction): Unit = {
     // Should send a message containing t to the bank of this account
-    ???
+    BankManager.findBank(bankId) ! t
   }
 
   def transferTo(accountNumber: String, amount: Double): Transaction = {
