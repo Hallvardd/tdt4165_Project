@@ -81,10 +81,10 @@ class Bank(val bankId: String) extends Actor {
 
   def processTransactionRequestReceipt(t: TransactionRequestReceipt): Unit = {
     implicit val timeout: Timeout = new Timeout(5 seconds)
-    val isInternal: Boolean = t.to.length <= 4
-    val toBankId: String = if (isInternal) bankId else t.to.substring(0, 4)
-    val toAccountId: String = if (isInternal) t.to else t.to.substring(4)
-    val transactionStatus = t.status
+    val isInternal: Boolean = t.toAccountNumber.length <= 4
+    val toBankId: String = if (isInternal) bankId else t.toAccountNumber.substring(0, 4)
+    val toAccountId: String = if (isInternal) t.toAccountNumber else t.toAccountNumber.substring(4)
+    val transactionStatus = t.transaction.status
 
     // This method should forward Transaction t to an account or another bank, depending on the "to"-address.
     // HINT: Make use of the variables that have been defined above.

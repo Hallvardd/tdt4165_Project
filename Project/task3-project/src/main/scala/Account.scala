@@ -110,7 +110,7 @@ class Account(val accountId: String, val bankId: String, val initialBalance: Dou
     case IdentifyActor => sender ! this
 
     case TransactionRequestReceipt(to, transactionId, transaction) => {
-      transactionId += (transactionId -> transaction)
+      transactions += (transactionId -> transaction)
       }
 
     case BalanceRequest => getBalanceAmount
@@ -129,7 +129,7 @@ class Account(val accountId: String, val bankId: String, val initialBalance: Dou
       }
     }
 
-    case msg => ???
+    case msg => println("Well, well ,well..")
   }
 
 
