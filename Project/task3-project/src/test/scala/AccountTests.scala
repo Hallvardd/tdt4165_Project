@@ -9,6 +9,7 @@ import scala.util.Random
 
 object TestHelper {
 
+
   def createBank(bankId: String): (ActorRef, Bank) = {
     val bankRef: ActorRef = BankManager.createBank(bankId)
     implicit val timeout = Timeout(5 seconds)
@@ -61,7 +62,7 @@ class Test02 extends FunSuite {
   }
 
 }
-
+/*
 class Test03 extends FunSuite {
 
   test("Valid transaction within same bank, accounts should have correct balance.") {
@@ -246,7 +247,6 @@ class Test09 extends FunSuite {
 
 }
 
-
 class Test10 extends FunSuite {
 
   test("Valid transactions within one bank, transaction list should have correct status information.") {
@@ -318,6 +318,7 @@ class Test12 extends FunSuite {
 
 }
 
+*/
 
 class Test13 extends FunSuite {
 
@@ -335,6 +336,7 @@ class Test13 extends FunSuite {
   }
 }
 
+/*
 class Test14 extends FunSuite {
 
   test("Valid transactions between two banks using full account address, account balances should be correct. Also, sending a BalanceRequest to an account should yield the correct balance.") {
@@ -411,6 +413,7 @@ class Test15 extends FunSuite {
   }
 
 }
+*/
 
 class Test16 extends FunSuite {
 
@@ -432,7 +435,7 @@ class Test16 extends FunSuite {
 
   }
 }
-
+/*
 
 class Test17 extends FunSuite {
 
@@ -454,3 +457,4 @@ class Test17 extends FunSuite {
 
   }
 }
+*/

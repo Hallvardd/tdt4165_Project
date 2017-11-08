@@ -48,10 +48,9 @@ class Bank(val bankId: String) extends Actor {
     case IdentifyActor => sender ! this
     case t: Transaction => processTransaction(t)
 
-    case t: TransactionRequestReceipt => {
-      // Forward receipt
-      ???
-    }
+    case t: TransactionRequestReceipt => {}
+
+
 
     case msg => ???
   }
@@ -66,14 +65,41 @@ class Bank(val bankId: String) extends Actor {
     // This method should forward Transaction t to an account or another bank, depending on the "to"-address.
     // HINT: Make use of the variables that have been defined above.
 
-    // Should be used to 
     if (isInternal){
-      // Do something
-      return None
+      findAccount(toAccountId) match {
+        case Some(account: ActorRef) => account ! t
+        case None => t.status = TransactionStatus.FAILED
+      }
     }
     else{
-      // Do something else!
-      return None
+      findOtherBank(toBankId) match {
+        case Some(bank: ActorRef) => bank ! t
+        case None => t.status = TransactionStatus.FAILED
+      }
+    }
+  }
+
+  def processTransactionRequestReceipt(t: TransactionRequestReceipt): Unit = {
+    implicit val timeout: Timeout = new Timeout(5 seconds)
+    val isInternal: Boolean = t.to.length <= 4
+    val toBankId: String = if (isInternal) bankId else t.to.substring(0, 4)
+    val toAccountId: String = if (isInternal) t.to else t.to.substring(4)
+    val transactionStatus = t.status
+
+    // This method should forward Transaction t to an account or another bank, depending on the "to"-address.
+    // HINT: Make use of the variables that have been defined above.
+
+    if (isInternal){
+      findAccount(toAccountId) match {
+        case Some(account: ActorRef) => account ! t
+        case None => // should send AccountRequestBack to sender account
+      }
+    }
+    else{
+      findOtherBank(toBankId) match {
+        case Some(bank: ActorRef) => bank ! t
+        case None => // should send AccountRequestBack to sender account
+      }
     }
   }
 }

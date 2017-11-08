@@ -1,4 +1,14 @@
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % Test
-libraryDependencies += "com.typesafe.akka" % "akka-actor_2.10" % "2.3.4"
+name := "akka-quickstart-scala"
 
-resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
+version := "1.0"
+
+scalaVersion := "2.12.2"
+
+lazy val akkaVersion = "2.5.3"
+
+libraryDependencies ++= Seq(
+  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion,
+  "org.scalatest" %% "scalatest" % "3.0.1"
+)
+parallelExecution in Test := false
