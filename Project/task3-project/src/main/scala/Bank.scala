@@ -36,9 +36,7 @@ class Bank(val bankId: String) extends Actor {
       Some(BankManager.findBank(bankId))
     }catch {
       case e: NoSuchElementException => None
-
     }
-
 
   }
 
@@ -47,12 +45,9 @@ class Bank(val bankId: String) extends Actor {
     case GetAccountRequest(id) => sender ! findAccount(id)
     case IdentifyActor => sender ! this
     case t: Transaction => processTransaction(t)
+    case t: TransactionRequestReceipt => processTransactionRequestReceipt(t)
 
-    case t: TransactionRequestReceipt => {}
-
-
-
-    case msg => ???
+    case msg => println("This does nothing!")
   }
 
   def processTransaction(t: Transaction): Unit = {
@@ -65,16 +60,21 @@ class Bank(val bankId: String) extends Actor {
     // This method should forward Transaction t to an account or another bank, depending on the "to"-address.
     // HINT: Make use of the variables that have been defined above.
 
-    if (isInternal){
+    if (isInternal || bankId == toBankId){
       findAccount(toAccountId) match {
         case Some(account: ActorRef) => account ! t
-        case None => t.status = TransactionStatus.FAILED
+        case None =>
+          t.status = TransactionStatus.FAILED
+          sender ! TransactionRequestReceipt(t.from, t.id, t)
       }
     }
     else{
       findOtherBank(toBankId) match {
-        case Some(bank: ActorRef) => bank ! t
-        case None => t.status = TransactionStatus.FAILED
+        case Some(bank: ActorRef) =>
+          bank ! t
+        case None =>
+          t.status = TransactionStatus.FAILED
+          sender ! TransactionRequestReceipt(t.from, t.id, t)
       }
     }
   }
@@ -92,13 +92,13 @@ class Bank(val bankId: String) extends Actor {
     if (isInternal){
       findAccount(toAccountId) match {
         case Some(account: ActorRef) => account ! t
-        case None => // should send AccountRequestBack to sender account
+        case None => // do nothing
       }
     }
     else{
       findOtherBank(toBankId) match {
         case Some(bank: ActorRef) => bank ! t
-        case None => // should send AccountRequestBack to sender account
+        case None => // do nothing
       }
     }
   }

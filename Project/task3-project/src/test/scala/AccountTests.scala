@@ -62,7 +62,6 @@ class Test02 extends FunSuite {
   }
 
 }
-/*
 class Test03 extends FunSuite {
 
   test("Valid transaction within same bank, accounts should have correct balance.") {
@@ -96,7 +95,6 @@ class Test04 extends FunSuite {
 
   }
 }
-
 
 class Test05 extends FunSuite {
 
@@ -318,7 +316,6 @@ class Test12 extends FunSuite {
 
 }
 
-*/
 
 class Test13 extends FunSuite {
 
@@ -336,7 +333,6 @@ class Test13 extends FunSuite {
   }
 }
 
-/*
 class Test14 extends FunSuite {
 
   test("Valid transactions between two banks using full account address, account balances should be correct. Also, sending a BalanceRequest to an account should yield the correct balance.") {
@@ -413,7 +409,6 @@ class Test15 extends FunSuite {
   }
 
 }
-*/
 
 class Test16 extends FunSuite {
 
@@ -435,7 +430,6 @@ class Test16 extends FunSuite {
 
   }
 }
-/*
 
 class Test17 extends FunSuite {
 
@@ -457,4 +451,4 @@ class Test17 extends FunSuite {
 
   }
 }
-*/
+

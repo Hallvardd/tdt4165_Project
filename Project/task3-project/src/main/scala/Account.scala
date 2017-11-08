@@ -23,7 +23,6 @@ class Account(val accountId: String, val bankId: String, val initialBalance: Dou
     def setBalance(tran_amount: Double): Unit = {
       amount += tran_amount
     }
-
   }
 
   val balance = new Balance(initialBalance)
@@ -40,6 +39,7 @@ class Account(val accountId: String, val bankId: String, val initialBalance: Dou
   def allTransactionsCompleted: Boolean = {
     // Should return whether all Transaction-objects in transactions are completed
     for(t <- getTransactions if !t.isCompleted){
+      //println(s"${t.from}, ${t.to}, ${t.status}, ${t.isCompleted} ${getFullAddress} ${getBalanceAmount}")
       return false
     }
     true
@@ -101,35 +101,35 @@ class Account(val accountId: String, val bankId: String, val initialBalance: Dou
   def reserveTransaction(t: Transaction): Boolean = {
     if (!transactions.contains(t.id)) {
       transactions += (t.id -> t)
-      return true
+      true
     }
-    false
+
+    else{
+      false
+    }
   }
 
   override def receive = {
     case IdentifyActor => sender ! this
-
     case TransactionRequestReceipt(to, transactionId, transaction) => {
+      transaction.receiptReceived = true
       transactions += (transactionId -> transaction)
-      }
-
-    case BalanceRequest => getBalanceAmount
-
-    case t: Transaction => {
-      // Handle incoming transaction
-      try {
-        deposit(t.amount)
-        t.status = TransactionStatus.SUCCESS
-        sender ! TransactionRequestReceipt(t.from, t.id, t)
-      }catch {
-        case _: NoSufficientFundsException | _: IllegalAmountException =>
-          t.status = TransactionStatus.FAILED
-          sender ! TransactionRequestReceipt(t.from, t.id, t)
-
+      if(transaction.status == TransactionStatus.FAILED){
+        deposit(transaction.amount)
       }
     }
 
-    case msg => println("Well, well ,well..")
+    case BalanceRequest => sender ! getBalanceAmount
+
+    case t: Transaction => {
+      // Handle incoming transaction
+      deposit(t.amount)
+      t.status = TransactionStatus.SUCCESS
+      sender ! TransactionRequestReceipt(t.from, t.id, t)
+
+    }
+
+    case msg => println("Hello! This is a nice message, for nice people.")
   }
 
 
